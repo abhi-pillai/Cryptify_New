@@ -1,0 +1,818 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Decrypt - Cryptify</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700;900&family=Rajdhani:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --neon-cyan: #00f3ff;
+            --neon-magenta: #ff00f7;
+            --neon-yellow: #ffed00;
+            --neon-orange: #ff6b35;
+            --deep-black: #0a0a0f;
+            --slate-dark: #1a1a2e;
+            --slate-mid: #252542;
+            --text-primary: #e8e8f5;
+            --text-dim: #9999b8;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Rajdhani', sans-serif;
+            background: var(--deep-black);
+            color: var(--text-primary);
+            overflow-x: hidden;
+            position: relative;
+            min-height: 100vh;
+        }
+
+        .grid-background {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                linear-gradient(rgba(255, 107, 53, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255, 107, 53, 0.03) 1px, transparent 1px);
+            background-size: 50px 50px;
+            animation: gridScroll 20s linear infinite;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        @keyframes gridScroll {
+            0% { transform: translate(0, 0); }
+            100% { transform: translate(50px, 50px); }
+        }
+
+        .orb {
+            position: fixed;
+            border-radius: 50%;
+            filter: blur(80px);
+            opacity: 0.15;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .orb1 {
+            width: 400px;
+            height: 400px;
+            background: var(--neon-orange);
+            top: 10%;
+            left: 15%;
+            animation: float1 15s ease-in-out infinite;
+        }
+
+        @keyframes float1 {
+            0%, 100% { transform: translate(0, 0) scale(1); }
+            50% { transform: translate(50px, -50px) scale(1.1); }
+        }
+
+        .container {
+            position: relative;
+            z-index: 1;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 40px 30px;
+        }
+
+        /* Header */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 50px;
+            animation: fadeInDown 0.8s ease-out;
+        }
+
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .logo {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 2rem;
+            font-weight: 900;
+            background: linear-gradient(135deg, var(--neon-cyan), var(--neon-magenta));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            letter-spacing: 2px;
+            text-decoration: none;
+        }
+
+        .back-btn {
+            padding: 12px 30px;
+            background: rgba(37, 37, 66, 0.6);
+            border: 1px solid rgba(255, 107, 53, 0.3);
+            color: var(--text-primary);
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 1rem;
+            font-weight: 600;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .back-btn:hover {
+            background: rgba(255, 107, 53, 0.2);
+            border-color: var(--neon-orange);
+            transform: translateX(-5px);
+        }
+
+        /* Main Title */
+        .page-title {
+            text-align: center;
+            margin-bottom: 50px;
+            animation: fadeIn 1s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .page-title h1 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 3rem;
+            font-weight: 900;
+            margin-bottom: 15px;
+            color: var(--neon-orange);
+            text-transform: uppercase;
+            letter-spacing: 3px;
+        }
+
+        .page-title p {
+            font-size: 1.2rem;
+            color: var(--text-dim);
+            letter-spacing: 1px;
+        }
+
+        /* Form Container */
+        .form-container {
+            background: rgba(37, 37, 66, 0.4);
+            border: 1px solid rgba(255, 107, 53, 0.2);
+            border-radius: 20px;
+            padding: 50px;
+            backdrop-filter: blur(10px);
+            animation: fadeInUp 0.8s ease-out 0.2s backwards;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .form-group {
+            margin-bottom: 35px;
+        }
+
+        label {
+            display: block;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1rem;
+            font-weight: 600;
+            margin-bottom: 12px;
+            color: var(--neon-orange);
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        .input-wrapper {
+            position: relative;
+        }
+
+        input[type="text"],
+        input[type="file"],
+        textarea,
+        select {
+            width: 100%;
+            padding: 15px 20px;
+            background: rgba(26, 26, 46, 0.8);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            color: var(--text-primary);
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 1rem;
+            transition: all 0.3s;
+        }
+
+        input[type="text"]:focus,
+        textarea:focus,
+        select:focus {
+            outline: none;
+            border-color: var(--neon-orange);
+            box-shadow: 0 0 20px rgba(255, 107, 53, 0.3);
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 120px;
+            font-family: 'Courier New', monospace;
+        }
+
+        /* Radio Buttons */
+        .radio-group {
+            display: flex;
+            gap: 30px;
+            flex-wrap: wrap;
+        }
+
+        .radio-item {
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+        }
+
+        input[type="radio"] {
+            appearance: none;
+            width: 20px;
+            height: 20px;
+            border: 2px solid rgba(255, 107, 53, 0.5);
+            border-radius: 50%;
+            margin-right: 10px;
+            position: relative;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        input[type="radio"]:checked {
+            border-color: var(--neon-orange);
+        }
+
+        input[type="radio"]:checked::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 10px;
+            height: 10px;
+            background: var(--neon-orange);
+            border-radius: 50%;
+            box-shadow: 0 0 10px var(--neon-orange);
+        }
+
+        .radio-item label {
+            margin: 0;
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 1rem;
+            font-weight: 500;
+            color: var(--text-primary);
+            text-transform: none;
+            letter-spacing: normal;
+            cursor: pointer;
+        }
+
+        /* Conditional sections */
+        .conditional {
+            display: none;
+            animation: slideIn 0.4s ease-out;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .conditional.active {
+            display: block;
+        }
+
+        /* Grid for algorithm options */
+        .options-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+        }
+
+        /* Submit Button */
+        .submit-btn {
+            width: 100%;
+            padding: 18px;
+            background: linear-gradient(135deg, var(--neon-orange), var(--neon-yellow));
+            color: var(--deep-black);
+            font-family: 'Orbitron', sans-serif;
+            font-weight: 700;
+            font-size: 1.1rem;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .submit-btn:hover {
+            transform: scale(1.02);
+            box-shadow: 0 10px 40px rgba(255, 107, 53, 0.5);
+        }
+
+        .submit-btn:active {
+            transform: scale(0.98);
+        }
+
+        .submit-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        /* Results Section */
+        .results-section {
+            display: none;
+            margin-top: 40px;
+            padding: 40px;
+            background: rgba(26, 26, 46, 0.6);
+            border: 1px solid rgba(255, 107, 53, 0.3);
+            border-radius: 20px;
+            animation: fadeInUp 0.6s ease-out;
+        }
+
+        .results-section.active {
+            display: block;
+        }
+
+        .results-title {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-bottom: 30px;
+            color: var(--neon-orange);
+            text-align: center;
+        }
+
+        .result-item {
+            margin-bottom: 25px;
+            padding: 20px;
+            background: rgba(37, 37, 66, 0.5);
+            border-radius: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .result-label {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: var(--neon-orange);
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .result-value {
+            font-family: 'Courier New', monospace;
+            font-size: 0.95rem;
+            color: var(--text-primary);
+            word-break: break-all;
+            line-height: 1.6;
+            padding: 15px;
+            background: rgba(10, 10, 15, 0.5);
+            border-radius: 8px;
+            border: 1px solid rgba(255, 107, 53, 0.1);
+        }
+
+        .download-btn {
+            display: inline-block;
+            padding: 12px 30px;
+            background: rgba(255, 107, 53, 0.2);
+            border: 1px solid var(--neon-orange);
+            color: var(--text-primary);
+            font-family: 'Rajdhani', sans-serif;
+            font-weight: 600;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-decoration: none;
+            margin-top: 10px;
+        }
+
+        .download-btn:hover {
+            background: rgba(255, 107, 53, 0.4);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(255, 107, 53, 0.3);
+        }
+
+        /* Loading Spinner */
+        .loading {
+            display: none;
+            text-align: center;
+            margin: 30px 0;
+        }
+
+        .loading.active {
+            display: block;
+        }
+
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 4px solid rgba(255, 107, 53, 0.2);
+            border-top: 4px solid var(--neon-orange);
+            border-radius: 50%;
+            margin: 0 auto 20px;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .loading-text {
+            font-family: 'Orbitron', sans-serif;
+            color: var(--neon-orange);
+            font-size: 1.1rem;
+        }
+
+        /* Info box */
+        .info-box {
+            padding: 20px;
+            background: rgba(255, 107, 53, 0.05);
+            border: 1px solid rgba(255, 107, 53, 0.2);
+            border-radius: 10px;
+            margin-top: 15px;
+        }
+
+        .info-box p {
+            font-size: 0.9rem;
+            color: var(--text-dim);
+            line-height: 1.6;
+            margin-bottom: 8px;
+        }
+
+        .info-box p:last-child {
+            margin-bottom: 0;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .container {
+                padding: 30px 20px;
+            }
+
+            .form-container {
+                padding: 30px 25px;
+            }
+
+            .page-title h1 {
+                font-size: 2rem;
+            }
+
+            .header {
+                flex-direction: column;
+                gap: 20px;
+            }
+
+            .options-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="grid-background"></div>
+    <div class="orb orb1"></div>
+
+    <div class="container">
+        <div class="header">
+            <a href="/" class="logo">Cryptify</a>
+            <a href="/" class="back-btn">← Back to Home</a>
+        </div>
+
+        <div class="page-title">
+            <h1>🔓 Decrypt</h1>
+            <p>Recover your original data securely</p>
+        </div>
+
+        <div class="form-container">
+            <form id="decryptForm" enctype="multipart/form-data">
+                <!-- Input Mode Selection -->
+                <div class="form-group">
+                    <label>Input Type</label>
+                    <div class="radio-group">
+                        <div class="radio-item">
+                            <input type="radio" id="textMode" name="ipmode" value="text" checked>
+                            <label for="textMode">Text</label>
+                        </div>
+                        <div class="radio-item">
+                            <input type="radio" id="fileMode" name="ipmode" value="file">
+                            <label for="fileMode">File</label>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Text Input -->
+                <div class="form-group conditional active" id="textInput">
+                    <label>Enter Encrypted Text (Hex)</label>
+                    <textarea name="iptext" id="iptextArea" placeholder="Paste your encrypted hex data here..."></textarea>
+                </div>
+
+                <!-- File Input -->
+                <div class="form-group conditional" id="fileInput">
+                    <label>Choose Encrypted File</label>
+                    <input type="file" name="ipfile" id="ipfileInput">
+                </div>
+
+                <!-- Encryption Mode -->
+                <div class="form-group">
+                    <label>Decryption Mode</label>
+                    <div class="radio-group">
+                        <div class="radio-item">
+                            <input type="radio" id="simpleMode" name="mode" value="simple" checked>
+                            <label for="simpleMode">Simple (IV from Data)</label>
+                        </div>
+                        <div class="radio-item">
+                            <input type="radio" id="advancedMode" name="mode" value="advanced">
+                            <label for="advancedMode">Advanced (Separate IV)</label>
+                        </div>
+                    </div>
+                    <div class="info-box">
+                        <p><strong>Simple Mode:</strong> IV is extracted from the encrypted data automatically.</p>
+                        <p><strong>Advanced Mode:</strong> You must provide the IV separately.</p>
+                    </div>
+                </div>
+
+                <!-- Algorithm Selection -->
+                <div class="form-group">
+                    <label>Algorithm</label>
+                    <select name="algorithm" id="algorithmSelect">
+                        <option value="1">AES (Advanced Encryption Standard)</option>
+                        <option value="2">DES3 (Triple DES)</option>
+                        <option value="3">Blowfish</option>
+                        <option value="4">Twofish</option>
+                    </select>
+                </div>
+
+                <!-- Block Size & Key Size -->
+                <div class="form-group">
+                    <div class="options-grid">
+                        <div>
+                            <label>Block Size</label>
+                            <select name="blocksize" id="blocksizeSelect">
+                                <option value="16">128 bits (16 bytes)</option>
+                                <option value="8">64 bits (8 bytes)</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label>Key Size</label>
+                            <select name="keysize" id="keysizeSelect">
+                                <option value="16">128 bits (16 bytes)</option>
+                                <option value="24">192 bits (24 bytes)</option>
+                                <option value="32">256 bits (32 bytes)</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Decryption Key (Required for both modes) -->
+                <div class="form-group">
+                    <label>Decryption Key (Hex) *Required</label>
+                    <input type="text" name="kvalue" id="kvalue" placeholder="Enter the key used for encryption" required>
+                </div>
+
+                <!-- Advanced Mode Fields -->
+                <div class="conditional" id="advancedFields">
+                    <div class="form-group">
+                        <label>Initialization Vector - IV (Hex)</label>
+                        <input type="text" name="iv" id="ivValue" placeholder="Enter IV in hexadecimal format">
+                    </div>
+                </div>
+
+                <button type="submit" class="submit-btn">Decrypt Data</button>
+            </form>
+
+            <div class="loading" id="loadingSpinner">
+                <div class="spinner"></div>
+                <p class="loading-text">Decrypting your data...</p>
+            </div>
+        </div>
+
+        <!-- Results Section -->
+        <div class="results-section" id="resultsSection">
+            <h2 class="results-title">✓ Decryption Successful</h2>
+            <div id="resultsContent"></div>
+        </div>
+    </div>
+
+    <script>
+        // Handle input mode toggle
+        const textModeRadio = document.getElementById('textMode');
+        const fileModeRadio = document.getElementById('fileMode');
+        const textInputDiv = document.getElementById('textInput');
+        const fileInputDiv = document.getElementById('fileInput');
+
+        textModeRadio.addEventListener('change', () => {
+            textInputDiv.classList.add('active');
+            fileInputDiv.classList.remove('active');
+        });
+
+        fileModeRadio.addEventListener('change', () => {
+            fileInputDiv.classList.add('active');
+            textInputDiv.classList.remove('active');
+        });
+
+        // Handle decryption mode toggle
+        const simpleModeRadio = document.getElementById('simpleMode');
+        const advancedModeRadio = document.getElementById('advancedMode');
+        const advancedFieldsDiv = document.getElementById('advancedFields');
+
+        simpleModeRadio.addEventListener('change', () => {
+            advancedFieldsDiv.classList.remove('active');
+        });
+
+        advancedModeRadio.addEventListener('change', () => {
+            advancedFieldsDiv.classList.add('active');
+        });
+        
+        // Algorithm-specific constraints
+        const algorithmSelect = document.getElementById('algorithmSelect');
+        const blocksizeSelect = document.getElementById('blocksizeSelect');
+        const keysizeSelect = document.getElementById('keysizeSelect');
+
+        // Define constraints for each algorithm
+        const algorithmConstraints = {
+            '1': { // AES
+                blockSizes: [16],
+                keySizes: [16, 24, 32],
+                name: 'AES'
+            },
+            '2': { // DES3
+                blockSizes: [8],
+                keySizes: [16, 24],
+                name: 'DES3'
+            },
+            '3': { // Blowfish
+                blockSizes: [8],
+                keySizes: [16, 24, 32],
+                name: 'Blowfish'
+            },
+            '4': { // Twofish
+                blockSizes: [16],
+                keySizes: [16, 24, 32],
+                name: 'Twofish'
+            }
+        };
+
+        function updateAlgorithmConstraints() {
+            const selectedAlgorithm = algorithmSelect.value;
+            const constraints = algorithmConstraints[selectedAlgorithm];
+
+            // Update block size options
+            const currentBlockSize = blocksizeSelect.value;
+            blocksizeSelect.innerHTML = '';
+            constraints.blockSizes.forEach(size => {
+                const option = document.createElement('option');
+                option.value = size;
+                option.textContent = `${size * 8} bits (${size} bytes)`;
+                blocksizeSelect.appendChild(option);
+            });
+            // Restore selection if valid, otherwise select first
+            if (constraints.blockSizes.includes(parseInt(currentBlockSize))) {
+                blocksizeSelect.value = currentBlockSize;
+            }
+
+            // Update key size options
+            const currentKeySize = keysizeSelect.value;
+            keysizeSelect.innerHTML = '';
+            constraints.keySizes.forEach(size => {
+                const option = document.createElement('option');
+                option.value = size;
+                option.textContent = `${size * 8} bits (${size} bytes)`;
+                keysizeSelect.appendChild(option);
+            });
+            // Restore selection if valid, otherwise select first
+            if (constraints.keySizes.includes(parseInt(currentKeySize))) {
+                keysizeSelect.value = currentKeySize;
+            }
+        }
+
+        // Update constraints when algorithm changes
+        algorithmSelect.addEventListener('change', updateAlgorithmConstraints);
+
+        // Initialize constraints on page load
+        updateAlgorithmConstraints();
+
+
+        // Handle form submission
+        const form = document.getElementById('decryptForm');
+        const loadingSpinner = document.getElementById('loadingSpinner');
+        const resultsSection = document.getElementById('resultsSection');
+        const resultsContent = document.getElementById('resultsContent');
+
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            // Validate key is provided
+            const keyValue = document.getElementById('kvalue').value.trim();
+            if (!keyValue) {
+                alert('Please provide the decryption key!');
+                return;
+            }
+
+            // Show loading
+            loadingSpinner.classList.add('active');
+            resultsSection.classList.remove('active');
+
+            // Prepare form data
+            const formData = new FormData(form);
+
+            try {
+                const response = await fetch('/downloader/', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                const result = await response.json();
+
+                // Hide loading
+                loadingSpinner.classList.remove('active');
+
+                // Check for errors
+                if (result.Data === 401 || result.Data === 402 || result.Data === 403) {
+                    alert('Decryption failed! Please check your key, IV, and settings.');
+                    return;
+                }
+
+                // Display results
+                displayResults(result.Data);
+
+            } catch (error) {
+                loadingSpinner.classList.remove('active');
+                alert('Error: ' + error.message);
+            }
+        });
+
+        function displayResults(data) {
+            let html = '';
+
+            if (data.decryptedMessage) {
+                html += `
+                    <div class="result-item">
+                        <div class="result-label">Decrypted Message</div>
+                        <div class="result-value">${escapeHtml(data.decryptedMessage)}</div>
+                    </div>
+                `;
+            }
+
+            if (data.decryptedFile) {
+                html += `
+                    <div class="result-item">
+                        <div class="result-label">Decrypted File</div>
+                        <a href="/download/${data.decryptedFile}" class="download-btn">📥 Download Decrypted File</a>
+                    </div>
+                `;
+            }
+
+            resultsContent.innerHTML = html;
+            resultsSection.classList.add('active');
+
+            // Scroll to results
+            resultsSection.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }
+
+        function escapeHtml(text) {
+            const map = {
+                '&': '&amp;',
+                '<': '&lt;',
+                '>': '&gt;',
+                '"': '&quot;',
+                "'": '&#039;'
+            };
+            return text.replace(/[&<>"']/g, m => map[m]);
+        }
+    </script>
+</body>
+</html>
